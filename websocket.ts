@@ -43,7 +43,7 @@ export function createWss(state: State) {
         ws.binaryType = "arraybuffer";
         clients.push(ws);
         ws.on("message", (data: ArrayBuffer) => {
-            console.log(new Uint8Array(data));
+            // console.log(new Uint8Array(data));
             const reader = BinaryReader.from(data);
             switch (reader.readUInt8()) {
                 case BinaryMessageType.ApplyParam: {
@@ -97,7 +97,7 @@ export function createWss(state: State) {
                     writer.writeUInt8(param[2].byteLength);
                 writer.writeBytes(param[2]);
             }
-            console.log(new Uint8Array(writer.getBuffer().buffer));
+            // console.log(new Uint8Array(writer.getBuffer().buffer));
             broadcast(writer.getBuffer().buffer);
         }
     });

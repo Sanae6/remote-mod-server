@@ -61,7 +61,7 @@ export class ModServer {
         state.on("deletedParam", (name) => {
             const buffer = this.prepareBuffer(PacketType.ParamDelete, 0x20);
             new TextEncoder().encodeInto(name, new Uint8Array(buffer, 4, 0x20));
-            console.log("deleted param", name);
+            // console.log("deleted param", name);
             this.broadcast(buffer);
         });
 
@@ -92,7 +92,7 @@ export class ModServer {
                 break;
             }
         }
-        console.log("broadcasting state change", this.clients.length, name, type, value);
+        // console.log("broadcasting state change", this.clients.length, name, type, value);
         this.broadcast(buffer);
     }
 
@@ -105,7 +105,7 @@ export class ModServer {
     }
 
     broadcast(data: ArrayBuffer) {
-        console.log("out", new Uint8Array(data));
+        // console.log("out", new Uint8Array(data));
         for (const client of this.clients) {
             client.socket.write(new Uint8Array(data));
         }
@@ -113,7 +113,7 @@ export class ModServer {
 
     onConnection(socket: Socket) {
         const client = new Client(socket, this);
-        console.log("got a client!");
+        // console.log("got a client!");
         this.clients.push(client);
         let x = 0;
         // setInterval(() => this.state.setParam("Stateful", ValueType.U32, x++), 2000);
@@ -125,12 +125,12 @@ export class ModServer {
 
     handleData(type: PacketType, data: Buffer) {
         const reader = BinaryReader.from(data);
-        console.log(type, data);
+        // console.log(type, data);
         switch (type) {
             case PacketType.Log:
                 const text = reader.readCString();
                 this.state.pushLog(text);
-                console.log(text);
+                process.stdout.write(text);
                 break;
         }
     }
