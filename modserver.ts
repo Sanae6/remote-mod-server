@@ -7,9 +7,10 @@ export enum PacketType {
     Log,
     ParamApply,
     ParamDelete,
+    Trigger,
 }
 
-const sizes: Record<ValueType, number> = [1, 1, 2, 2, 4, 4, 4, 4, 1, 0];
+const sizes: Record<ValueType, number> = [1, 1, 2, 2, 4, 4, 4, 4, 1, 0, 0];
 
 export class Client {
     private static emptyBuffer = Buffer.alloc(0);
@@ -61,7 +62,11 @@ export class ModServer {
         state.on("deletedParam", (name) => {
             const buffer = this.prepareBuffer(PacketType.ParamDelete, 0x20);
             new TextEncoder().encodeInto(name, new Uint8Array(buffer, 4, 0x20));
-            // console.log("deleted param", name);
+            this.broadcast(buffer);
+        });
+        state.on("trigger", (name) => {
+            const buffer = this.prepareBuffer(PacketType.Trigger, SizeComputer.string(name).getSize());
+            new TextEncoder().encodeInto(name, new Uint8Array(buffer, 4));
             this.broadcast(buffer);
         });
 
@@ -113,7 +118,7 @@ export class ModServer {
 
     onConnection(socket: Socket) {
         const client = new Client(socket, this);
-        // console.log("got a client!");
+        console.log("got a client!");
         this.clients.push(client);
         let x = 0;
         // setInterval(() => this.state.setParam("Stateful", ValueType.U32, x++), 2000);
@@ -129,8 +134,8 @@ export class ModServer {
         switch (type) {
             case PacketType.Log:
                 const text = reader.readCString();
-                this.state.pushLog(text);
                 process.stdout.write(text);
+                // this.state.pushLog(text);
                 break;
         }
     }

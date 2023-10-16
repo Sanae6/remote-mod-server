@@ -7,10 +7,11 @@ enum BinaryMessageType {
     Logs,
     Params,
     ApplyParam,
-    DeleteParam
+    DeleteParam,
+    Trigger,
 }
 
-const sizes: Record<ValueType, number> = [1, 1, 2, 2, 4, 4, 4, 4, 1, 0];
+const sizes: Record<ValueType, number> = [1, 1, 2, 2, 4, 4, 4, 4, 1, 0, 0];
 
 function encodeValue(type: ValueType, value: any) {
     if (type === ValueType.String) {
@@ -66,6 +67,11 @@ export function createWss(state: State) {
                 case BinaryMessageType.DeleteParam: {
                     const name = reader.readString(reader.readUInt8());
                     state.deleteParam(name);
+                    break;
+                }
+                case BinaryMessageType.Trigger: {
+                    const name = reader.readString(reader.readUInt8());
+                    state.trigger(name);
                     break;
                 }
             }

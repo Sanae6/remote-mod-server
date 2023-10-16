@@ -12,6 +12,7 @@ export enum ValueType {
     F64,
     Boolean,
     String,
+    Trigger,
 }
 
 type ValueTypeMapping = [type: ValueType.Boolean, value: boolean] | [type: ValueType.String, value: string] | [type: ValueType, value: number];
@@ -45,5 +46,9 @@ export class State extends EventEmitter {
 
     getParam(name: string): ValueTypeMapping {
         return this.params[name];
+    }
+
+    trigger(name: string) {
+        this.emit("trigger", name);
     }
 }
