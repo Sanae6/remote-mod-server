@@ -61,6 +61,7 @@ export function createWss(state: State) {
                         case ValueType.F64: state.setParam(name, type, reader.readFloat64LE()); break;
                         case ValueType.Boolean: state.setParam(name, type, reader.readBoolean()); break;
                         case ValueType.String: state.setParam(name, type, reader.readString(reader.readUInt8())); break;
+                        case ValueType.Trigger: state.setParam(name, type, undefined); break;
                     }
                     break;
                 }

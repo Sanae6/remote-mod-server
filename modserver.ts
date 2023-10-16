@@ -74,6 +74,7 @@ export class ModServer {
     }
 
     handleParam(name: string, type: ValueType, value: any) {
+        if (type === ValueType.Trigger) return;
         let size = SizeComputer.int16().string(name).int8()
         if (type == ValueType.String) size = size.string(value).int8().int8();
         else size = size.bytes(sizes[type]);

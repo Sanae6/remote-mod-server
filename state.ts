@@ -49,6 +49,7 @@ export class State extends EventEmitter {
     }
 
     trigger(name: string) {
+        console.log("got trigger", name);
         this.emit("trigger", name);
     }
 }
