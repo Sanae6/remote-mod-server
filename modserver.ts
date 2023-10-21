@@ -4,6 +4,7 @@ import { BinaryReader } from "./binary";
 import { State, ValueType } from "./state";
 
 export enum PacketType {
+    Ping,
     Log,
     ParamApply,
     ParamDelete,
@@ -70,6 +71,11 @@ export class ModServer {
             this.broadcast(buffer);
         });
 
+        const pingBuffer = this.prepareBuffer(PacketType.Ping, 0);
+        setInterval(() => {
+            this.broadcast(pingBuffer);
+        }, 3000);
+
         this.server.listen(3085, () => console.log("mod server listening on 3085"))
     }
 
@@ -133,6 +139,7 @@ export class ModServer {
         const reader = BinaryReader.from(data);
         // console.log(type, data);
         switch (type) {
+            case PacketType.Ping: return;
             case PacketType.Log:
                 const text = reader.readCString();
                 process.stdout.write(text);
