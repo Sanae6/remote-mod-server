@@ -130,7 +130,8 @@ export class ModServer {
         let x = 0;
         // setInterval(() => this.state.setParam("Stateful", ValueType.U32, x++), 2000);
         for (const [name, [type, value]] of Object.entries(this.state.params)) {
-            this.handleParam(name, type, value);
+            if (type !== ValueType.Trigger)
+                this.handleParam(name, type, value);
         }
         socket.on("close", () => this.clients.splice(this.clients.indexOf(client), 1));
     }

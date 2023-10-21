@@ -15,7 +15,7 @@ export enum ValueType {
     Trigger,
 }
 
-type ValueTypeMapping = [type: ValueType.Boolean, value: boolean] | [type: ValueType.String, value: string] | [type: ValueType, value: number];
+type ValueTypeMapping = [type: ValueType.Boolean, value: boolean] | [type: ValueType.String, value: string] | [type: ValueType.Trigger, value: boolean] | [type: ValueType, value: number];
 
 export class State extends EventEmitter {
     private static path = "./params.json";
@@ -26,6 +26,7 @@ export class State extends EventEmitter {
         super();
         if (existsSync(State.path)) this.params = JSON.parse(readFileSync(State.path, "utf-8"));
         this.on("param", () => writeFileSync(State.path, JSON.stringify(this.params)));
+        this.on("trigger", () => writeFileSync(State.path, JSON.stringify(this.params)));
         this.on("deletedParam", () => writeFileSync(State.path, JSON.stringify(this.params)));
     }
 
@@ -50,6 +51,7 @@ export class State extends EventEmitter {
 
     trigger(name: string) {
         console.log("got trigger", name);
+        this.params[name] = [ValueType.Trigger, false];
         this.emit("trigger", name);
     }
 }
