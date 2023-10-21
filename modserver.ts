@@ -65,7 +65,7 @@ export class ModServer {
             this.broadcast(buffer);
         });
         state.on("trigger", (name) => {
-            const buffer = this.prepareBuffer(PacketType.Trigger, SizeComputer.string(name).getSize());
+            const buffer = this.prepareBuffer(PacketType.Trigger, SizeComputer.string(name).int8().getSize());
             new TextEncoder().encodeInto(name, new Uint8Array(buffer, 4));
             this.broadcast(buffer);
         });
